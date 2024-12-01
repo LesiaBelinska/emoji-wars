@@ -1,5 +1,5 @@
-import React from "react";
-import s from "./PrimaryButton.module.css";
+import React from 'react';
+import s from './PrimaryButton.module.css';
 
 const PrimaryButton = ({ onClick, buttonText }) => {
   return (

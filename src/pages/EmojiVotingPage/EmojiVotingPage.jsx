@@ -1,4 +1,5 @@
 import React from 'react';
+
 import EmojiVotingSection from '../../components/EmojiVotingSection/EmojiVotingSection.jsx';
 import s from './EmojiVotingPage.module.css';
 

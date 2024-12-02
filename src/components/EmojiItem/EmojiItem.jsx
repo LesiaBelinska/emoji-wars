@@ -1,5 +1,3 @@
-import React from 'react';
-
 import s from './EmojiItem.module.css';
 
 const EmojiItem = ({ emoji, votes, onClick, hidden }) => {

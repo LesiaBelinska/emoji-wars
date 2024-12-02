@@ -1,5 +1,3 @@
-import React from 'react';
-
 import s from './EmojiList.module.css';
 
 import EmojiItem from '../EmojiItem/EmojiItem.jsx';

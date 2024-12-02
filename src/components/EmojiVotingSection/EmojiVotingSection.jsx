@@ -1,83 +1,63 @@
-import React, { Component } from 'react';
+import { useState, useEffect } from 'react';
 
 import EmojiList from '../EmogiList/EmojiList.jsx';
 import PrimaryButton from '../Buttons/PrimaryButton/PrimaryButton.jsx';
 import s from './EmojiVotingSection.module.css';
 
-class EmojiVotingSection extends Component {
-  constructor(props) {
-    super(props);
+const EmojiVotingSection = () => {
 
-    this.state = {
-      emoji: [],
-      showBest: false,
-    };
-  }
-
-  componentDidMount() {
+  const initialEmoji = () => {
     const storedEmoji = localStorage.getItem('emoji');
-    if (storedEmoji) {
-      this.setState({ emoji: JSON.parse(storedEmoji) });
-    } else {
-      this.setState({
-        emoji: [
-          { id: 1, emoji: '😀', votes: 0 },
-          { id: 2, emoji: '😜', votes: 0 },
-          { id: 3, emoji: '😍', votes: 0 },
-          { id: 4, emoji: '🤩', votes: 0 },
-          { id: 5, emoji: '😎', votes: 0 },
-        ],
-      });
-    }
+
+    return storedEmoji ? JSON.parse(storedEmoji) : [
+    { id: 1, emoji: '😀', votes: 0 },
+    { id: 2, emoji: '😜', votes: 0 },
+    { id: 3, emoji: '😍', votes: 0 },
+    { id: 4, emoji: '🤩', votes: 0 },
+    { id: 5, emoji: '😎', votes: 0 },
+  ]
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    if (prevState.emoji !== this.state.emoji) {
-      localStorage.setItem('emoji', JSON.stringify(this.state.emoji));
-    }
-  }
+  const [emoji, setEmoji] = useState(initialEmoji);
+  const [showBest, setShowBest] = useState(false);
 
-  onClickVoteHandler = id => {
-    this.setState(prevState => ({
-      emoji: prevState.emoji.map(item =>
+  useEffect(() => {
+    localStorage.setItem('emoji', JSON.stringify(emoji));
+  }, [emoji]);
+
+  const onClickVoteHandler = id => {
+    setEmoji(
+      emoji.map(item =>
         item.id === id ? { ...item, votes: item.votes + 1 } : item
-      ),
-    }));
-  };
-
-  getBestEmojiIds = () => {
-    const maxVotes = Math.max(...this.state.emoji.map(item => item.votes));
-    return this.state.emoji
-      .filter(item => item.votes === maxVotes)
-      .map(item => item.id);
-  };
-
-  toggleShowBest = () => {
-    this.setState(prevState => ({
-      showBest: !prevState.showBest,
-    }));
-  };
-
-  render() {
-    const bestEmojiIds = this.state.showBest ? this.getBestEmojiIds() : [];
-
-    return (
-      <div className={s.section}>
-        <h1 className={s.title}>Choose the best emoji!</h1>
-        <EmojiList
-          emoji={this.state.emoji}
-          onClick={this.onClickVoteHandler}
-          bestEmojiIds={bestEmojiIds}
-        />
-        <PrimaryButton
-          buttonText={
-            this.state.showBest ? 'Show all emoji' : 'Show the best emoji'
-          }
-          onClick={this.toggleShowBest}
-        />
-      </div>
+      )
     );
-  }
-}
+  };
+
+  const getBestEmojiIds = () => {
+    const maxVotes = Math.max(...emoji.map(item => item.votes));
+    return emoji.filter(item => item.votes === maxVotes).map(item => item.id);
+  };
+
+  const toggleShowBest = () => {
+    setShowBest(!showBest);
+  };
+
+  const bestEmojiIds = showBest ? getBestEmojiIds() : [];
+
+  return (
+    <div className={s.section}>
+      <h1 className={s.title}>Choose the best emoji!</h1>
+      <EmojiList
+        emoji={emoji}
+        onClick={onClickVoteHandler}
+        bestEmojiIds={bestEmojiIds}
+      />
+      <PrimaryButton
+        buttonText={showBest ? 'Show all emoji' : 'Show the best emoji'}
+        onClick={toggleShowBest}
+      />
+    </div>
+  );
+};
 
 export default EmojiVotingSection;
